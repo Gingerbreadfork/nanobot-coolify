@@ -1,0 +1,39 @@
+###############################################################################
+#  nanobot on Coolify
+#  https://github.com/HKUDS/nanobot
+#
+#  COOLIFY SETUP:
+#  1. Create a new project → Add Resource → Docker Compose → pick this repo
+#  2. Set environment variables in Coolify UI (see .env.example)
+#  3. Set port to 18790 in Coolify
+#  4. Set domain to your desired domain (e.g. nanobot.example.com)
+#  5. Health check → "None" (gateway doesn't serve HTTP)
+#  6. Deploy
+###############################################################################
+
+services:
+  nanobot:
+    build: .
+    container_name: nanobot
+    restart: unless-stopped
+    ports:
+      - "18790:18790"
+    environment:
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY:?Set your OpenRouter API key}
+      - NANOBOT_MODEL=${NANOBOT_MODEL:-anthropic/claude-sonnet-4-20250514}
+      - BRAVE_SEARCH_API_KEY=${BRAVE_SEARCH_API_KEY:-}
+      - TELEGRAM_ENABLED=${TELEGRAM_ENABLED:-false}
+      - TELEGRAM_TOKEN=${TELEGRAM_TOKEN:-}
+      - TELEGRAM_ALLOW_FROM=${TELEGRAM_ALLOW_FROM:-}
+      - DISCORD_ENABLED=${DISCORD_ENABLED:-false}
+      - DISCORD_TOKEN=${DISCORD_TOKEN:-}
+      - DISCORD_ALLOW_FROM=${DISCORD_ALLOW_FROM:-}
+      - WHATSAPP_ENABLED=${WHATSAPP_ENABLED:-false}
+      - WHATSAPP_ALLOW_FROM=${WHATSAPP_ALLOW_FROM:-}
+    volumes:
+      - nanobot-data:/root/.nanobot
+      - nanobot-workspace:/root/nanobot-workspace
+
+volumes:
+  nanobot-data:
+  nanobot-workspace:
